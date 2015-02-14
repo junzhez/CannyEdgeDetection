@@ -1,0 +1,8 @@
+J:\Github\ImageRead\ImageRead\bin\Debug\ImageRead.exe.config
+J:\Github\ImageRead\ImageRead\bin\Debug\ImageRead.exe
+J:\Github\ImageRead\ImageRead\bin\Debug\ImageRead.pdb
+J:\Github\ImageRead\ImageRead\obj\Debug\ImageRead.csprojResolveAssemblyReference.cache
+J:\Github\ImageRead\ImageRead\obj\Debug\ImageRead.exe
+J:\Github\ImageRead\ImageRead\obj\Debug\ImageRead.pdb
+J:\Github\ImageRead\ImageRead\bin\Debug\MathNet.Numerics.dll
+J:\Github\ImageRead\ImageRead\bin\Debug\MathNet.Numerics.xml

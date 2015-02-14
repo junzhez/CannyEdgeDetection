@@ -1,0 +1,8 @@
+J:\Github\ImageRead\ImageDisplay\bin\Debug\ImageDisplay.exe.config
+J:\Github\ImageRead\ImageDisplay\bin\Debug\ImageDisplay.exe
+J:\Github\ImageRead\ImageDisplay\bin\Debug\ImageDisplay.pdb
+J:\Github\ImageRead\ImageDisplay\obj\Debug\ImageDisplay.csprojResolveAssemblyReference.cache
+J:\Github\ImageRead\ImageDisplay\obj\Debug\ImageDisplay.Properties.Resources.resources
+J:\Github\ImageRead\ImageDisplay\obj\Debug\ImageDisplay.csproj.GenerateResource.Cache
+J:\Github\ImageRead\ImageDisplay\obj\Debug\ImageDisplay.exe
+J:\Github\ImageRead\ImageDisplay\obj\Debug\ImageDisplay.pdb
