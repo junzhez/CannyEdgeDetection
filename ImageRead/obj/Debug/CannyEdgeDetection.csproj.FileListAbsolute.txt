@@ -1,0 +1,8 @@
+E:\Github\ImageRead\ImageRead\bin\Debug\ImageRead.exe.config
+E:\Github\ImageRead\ImageRead\bin\Debug\ImageRead.exe
+E:\Github\ImageRead\ImageRead\bin\Debug\ImageRead.pdb
+E:\Github\ImageRead\ImageRead\bin\Debug\MathNet.Numerics.dll
+E:\Github\ImageRead\ImageRead\bin\Debug\MathNet.Numerics.xml
+E:\Github\ImageRead\ImageRead\obj\Debug\CannyEdgeDetection.csprojResolveAssemblyReference.cache
+E:\Github\ImageRead\ImageRead\obj\Debug\ImageRead.exe
+E:\Github\ImageRead\ImageRead\obj\Debug\ImageRead.pdb

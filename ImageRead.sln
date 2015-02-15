@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageRead", "ImageRead\ImageRead.csproj", "{D8EEAB53-92F2-4EFB-8F2E-C201EB9C3E97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CannyEdgeDetection", "ImageRead\CannyEdgeDetection.csproj", "{D8EEAB53-92F2-4EFB-8F2E-C201EB9C3E97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
