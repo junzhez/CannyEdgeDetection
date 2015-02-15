@@ -16,7 +16,7 @@ namespace ImageRead
         [STAThread]
         static void Main(string[] args)
         {
-            string bitmapFilePath = @"J:\Github\ImageRead\lena.gif";
+            string bitmapFilePath = @"E:\Github\ImageRead\lena.gif";
             Bitmap c = new Bitmap(bitmapFilePath);
             
             int Nx1 = 10;
@@ -45,18 +45,230 @@ namespace ImageRead
                 }
             }
 
-            DenseMatrix filter = Program.D2dGauss(Nx1, Sigmax1, Nx2, Sigmax2, Theta1);
+            DenseMatrix filterx = Program.D2dGauss(Nx1, Sigmax1, Nx2, Sigmax2, Theta1);;
 
+            DenseMatrix matx = Program.Convolute(mat, filterx);
 
+            DenseMatrix filtery = Program.D2dGauss(Ny1, Sigmay1, Ny2, Sigmay2, Theta2); ;
+
+            DenseMatrix maty = Program.Convolute(mat, filtery);
+
+            DenseMatrix matx2 = (DenseMatrix) matx.PointwisePower(2);
+
+            DenseMatrix maty2 = (DenseMatrix) maty.PointwisePower(2);
+
+            DenseMatrix matg = matx2 + maty2;
+
+            DenseMatrix R = new DenseMatrix(matg.RowCount, matg.ColumnCount);
+
+            double max = Program.Max(matg);
+
+            double min = Program.Min(matg);
+
+            double level = alpha * (max - min) + min;
+
+            for (int i = 1; i < matg.RowCount - 1; i++)
+            {
+                for (int j = 1; j < matg.ColumnCount - 1; j++)
+                {
+                    if (matg[i, j] <= level)
+                    {
+                        R[i, j] = 255;
+                    }
+                    else
+                    {
+                        double[] xi =
+                        {
+                            matx[i, j] / matg[i, j], -matx[i, j] / matg[i, j]
+                        };
+
+                        double[] yi = 
+                        {
+                            maty[i, j] / matg[i, j], -maty[i, j] / matg[i, j]
+                        };
+
+                        double[] zi = { 0, 0 };
+
+                        for(int ii = 0; ii < 2; ii++)
+                        {
+                            if (xi[ii] >= -1 && xi[ii] < 0)
+                            {
+                                if (yi[ii] >= -1 && yi[ii] < 0)
+                                {
+                                    double[] X = {-1, 0};
+                                    double[] Y = {-1, 0};
+                                    double[,] Values = 
+                                        {
+                                            {matg[i - 1, j - 1], matg[i - 1, j]}, 
+                                            {matg[i, j - 1], matg[i, j]}
+                                        };
+
+                                    zi[ii] = Program.Interp2(X, Y, Values, xi[ii], yi[ii]);
+                                }
+                                else if (yi[ii] >= 0 && yi[ii] <= 1)
+                                {
+                                    double[] X = { -1, 0 };
+                                    double[] Y = { 0, 1 };
+                                    double[,] Values = 
+                                        {
+                                            {matg[i - 1, j], matg[i - 1, j + 1]}, 
+                                            {matg[i, j], matg[i, j + 1]}
+                                        };
+
+                                    zi[ii] = Program.Interp2(X, Y, Values, xi[ii], yi[ii]);
+                                }
+                            }
+                            else if (xi[ii] >= 0 && xi[ii] <= 1)
+                            {
+                                if (yi[ii] >= -1 && yi[ii] < 0)
+                                {
+                                    double[] X = { 0, 1 };
+                                    double[] Y = { -1, 0 };
+                                    double[,] Values = 
+                                        {
+                                            {matg[i, j - 1], matg[i, j]}, 
+                                            {matg[i + 1, j - 1], matg[i + 1, j]}
+                                        };
+
+                                    zi[ii] = Program.Interp2(X, Y, Values, xi[ii], yi[ii]);
+                                }
+                                else if (yi[ii] >= 0 && yi[ii] <= 1)
+                                {
+                                    double[] X = { 0, 1 };
+                                    double[] Y = { 0, 1 };
+                                    double[,] Values = 
+                                        {
+                                            {matg[i, j], matg[i, j + 1]}, 
+                                            {matg[i + 1, j], matg[i + 1, j + 1]}
+                                        };
+
+                                    zi[ii] = Program.Interp2(X, Y, Values, xi[ii], yi[ii]);
+                                }
+                            }
+
+                            if (matg[i, j] >= zi[0] && matg[i, j] >= zi[1])
+                            {
+                                R[i, j] = 0;
+                            }
+                            else
+                            {
+                                R[i, j] = 255;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Program.MatrixShow(R);
         }
 
-        static Convolute(DenseMatrix Mat, DenseMatrix Kernel)
+        static double Interp2(
+            double[] X, double[] Y, 
+            double[,] Values, 
+            double x, double y)
+        {
+            double q11 = Values[0, 0] * (X[1] - x) * (Y[1] - y) / ((X[1] - X[0]) * (Y[1] - Y[0]));
+            double q21 = Values[1, 0] * (x - X[0]) * (Y[1] - y) / ((X[1] - X[0]) * (Y[1] - Y[0]));
+            double q12 = Values[0, 1] * (X[1] - x) * (y - Y[0]) / ((X[1] - X[0]) * (Y[1] - Y[0]));
+            double q22 = Values[1, 1] * (x - X[0]) * (y - Y[0]) / ((X[1] - X[0]) * (Y[1] - Y[0]));
+
+            return q11 + q21 + q12 + q22;
+        }
+
+        static double Max(DenseMatrix Mat)
+        {
+            double result = Double.MinValue;
+
+            for (int i = 0; i < Mat.RowCount; i++)
+            {
+                for (int j = 0; j < Mat.ColumnCount; j++)
+                {
+                    if (Mat.At(i, j) > result)
+                    {
+                        result = Mat.At(i, j);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        static double Min(DenseMatrix Mat)
+        {
+            double result = Double.MaxValue;
+
+            for (int i = 0; i < Mat.RowCount; i++)
+            {
+                for (int j = 0; j < Mat.ColumnCount; j++)
+                {
+                    if (Mat.At(i, j) < result)
+                    {
+                        result = Mat.At(i, j);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        static void MatrixShow(DenseMatrix Mat)
+        {
+            Bitmap img = new Bitmap(Mat.ColumnCount, Mat.RowCount);
+
+            for(int i = 0; i < img.Width; i++)
+            {
+                for(int j = 0; j < img.Height; j++)
+                {
+                    int val = (int) Mat.At(j, i);
+                    img.SetPixel(i, j, Color.FromArgb(val, val, val));
+                }
+            }
+
+            Program.ImageShow(img);
+        }
+
+        static DenseMatrix Convolute(DenseMatrix Mat, DenseMatrix Kernel)
         {
             int w = Mat.ColumnCount;
             int h = Mat.RowCount;
 
-            int halfKernelWidth = kernelWidth / 2;
-            int halfKernelHeight = kernelHeight / 2;
+            var result = new DenseMatrix(h, w);
+
+            int halfKernelWidth = Kernel.ColumnCount / 2;
+            int halfKernelHeight = Kernel.RowCount / 2;
+
+            for(int i = 0; i < h; i++)
+            {
+                for(int j = 0; j < w; j++)
+                {
+                    double sum = 0;
+                    for(int x = -halfKernelHeight; x < halfKernelHeight; x++)
+                    {
+                        for(int y = -halfKernelWidth; y < halfKernelWidth; y++)
+                        {
+                            int ki = x + halfKernelHeight;
+                            int kj = y + halfKernelWidth;
+
+                            int hi = i - x;
+                            int hj = j - y;
+
+                            double hval = 0;
+
+                            if((hi >= 0 && hi < h)
+                                && (hj >= 0 && hj < w))
+                            {
+                                hval = Mat.At(hi, hj);
+                            }
+
+                            sum += hval * Kernel.At(ki, kj);
+                        }
+                    }
+
+                    result.At(i, j, sum);
+                }
+            }
+
+            return result;
         }
 
         static void ImageShow(Bitmap Img)
